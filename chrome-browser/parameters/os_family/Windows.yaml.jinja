@@ -14,10 +14,10 @@
 values:
   pkg:
 {%- if salt.grains.get('cpuarch') == 'AMD64' %}
-    install_uri: ''
+    installer_uri: 'https://www.google.com/chrome/?standalone=1&platform=win64'
     uninstaller: 'C:/Program Files/...'
 {%- else %}
-    install_uri: ''
+    installer_uri: 'https://www.google.com/chrome/?standalone=1&platform=win'
     uninstaller: 'C:/Program Files (x86)/...'
 {%- endif %}
 ...
