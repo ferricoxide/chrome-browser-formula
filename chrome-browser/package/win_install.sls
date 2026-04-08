@@ -3,17 +3,19 @@
 {#- Get the `tplroot` from `tpldir` #}
 {%- set tplroot = tpldir.split('/')[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as chrome with context %}
+{%- if salt.grains.get('cpuarch') == "AMD64" %}
+  {%- set temp_exe = 'C:/Windows/Temp/ChromeStandaloneSetup64.exe' %}
+{%- else %}
+  {%- set temp_exe = 'C:/Windows/Temp/ChromeStandaloneSetup32.exe' %}
+{%- endif %}
 
-{#- Keep URL specification within 80 columns #}
-{%- set url = 'https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C' ~
-    '-AFF1-A69D9E530F96%7D%26iid%3D%7B69E813F4-98F1-4467-8A73-5D9B0A34D21B' ~
-    '%7D%26lang%3Den%26browser%3D4%26usagestats%3D0%26appname%3DGoogle%2520' ~
-    'Chrome%26needsadmin%3Dtrue%26ap%3Dx64-stable-statsdef_1%26installdat' ~
-    'aindex%3Ddefaultbrowser/chrome/install/ChromeStandaloneSetup64.exe'
-%}
-{%- set temp_exe = 'C:/Windows/Temp/ChromeStandaloneSetup64.exe' %}
+Clean staged Chrome Standalone EXE-based installer:
+  file.absent:
+    - name: '{{ temp_exe }}'
+    - require:
+      - cmd: 'Install Google Chrome EXE'
 
-Download Chrome Standalone EXE:
+Download Chrome Standalone EXE-based installer:
   file.managed:
     - name: '{{ temp_exe }}'
     - source: '{{ chrome.pkg.installer_uri }}'
@@ -24,7 +26,12 @@ Install Google Chrome EXE:
   cmd.run:
     - name: '"{{ temp_exe }}" /silent /install'
     - require:
-      - file: 'Download Chrome Standalone EXE'
+      - file: 'Download Chrome Standalone EXE-based installer'
+    - shell: powershell
+    - success_retcodes: [
+        0,
+        3010
+      ]
     - unless: |
         if (
           Test-Path "${env:ProgramFiles}\Google\Chrome\Application\chrome.exe"
@@ -33,4 +40,3 @@ Install Google Chrome EXE:
         } else {
           exit 1
         }
-
