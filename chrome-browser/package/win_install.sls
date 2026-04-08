@@ -32,11 +32,4 @@ Install Google Chrome EXE:
         0,
         3010
       ]
-    - unless: |
-        if (
-          Test-Path "${env:ProgramFiles}\Google\Chrome\Application\chrome.exe"
-        ) {
-          exit 0
-        } else {
-          exit 1
-        }
+    - unless: 'if (Test-Path "${env:ProgramFiles}\Google\Chrome\Application\chrome.exe") { exit 0 } else { exit 1 }'
