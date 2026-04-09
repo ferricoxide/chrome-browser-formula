@@ -1,26 +1,28 @@
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
----
 chrome-browser:
   lookup:
-    windows:                      # Keys to support deployments on Windows Server hosts
-      installer_uri: ''           # Support to be added
-    elx:                          # Keys to support deployments on Enterprise Linux hosts
-      chrome_family: ''		        # May be any of
-                                  # * 'google-chrome-beta'
-                                  # * 'google-chrome-canary'
-                                  # * 'google-chrome-stable': Default value if unset
-                                  # * 'google-chrome-unstable'
-      custom_version: ''	        # Support to be added
-      installer_uri: ''		        # Support to be added
-      private_repo_def: |	        # If using other than the official Google repositories
-                                  # inject the desired /etc/yum.repos.d file-contents,
-                                  # here, as a text-block (config-clone of official
-                                  # Google repositories shown for demonstration purposes
-                                  # only)
-        [google-chrome]
-        name=google-chrome
-        baseurl=http://dl.google.com/linux/chrome/rpm/stable/x86_64
-        enabled=1
-        gpgcheck=1
-        gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+    extra_files: {}                             # Not yet implemented
+    pkg:                                        # Package-related settings
+      installer_uri: ''                         # URI to fetch installer-archive from
+      {%- if grains.os_family == "RedHat" %}
+      name: 'google-chrome-beta'                # Type of chrome-installation when using public dnf repositories
+      private_repo_def: ''                      # Content of dnf repo-def is not using public
+      release_family: ''                        # Type of chrome-installation when using public dnf repositories
+      {%- elif grains.os_family == "Windows" %}
+      name: 'Google Chrome'                     # Package Name in host-registry
+      version: ''                               # Not yet implemented (to support MSI-installer)
+      uninstaller: ''                           # Not yet implemented (to support MSI-installer)
+      {%- endif %}
+    policy_extras:                              # Policy-related settings
+      archive_root: ''
+      policy_archive: ''                        # location of Chrome policy files (see .../default.yaml)
+      policy_files: {}                          # Policy files to install (see .../os_family/Windows.yaml)
+      registry_keys: []                         # Registry keys to set (see .../os_family/Windows.yaml)
+      settings:                                 # See:
+        chrome_homepage: ''                     # * https://support.google.com/chrome/a/answer/7655796
+        home_page: ''                           # * https://chromeenterprise.google/policies/
+        managed_bookmarks: null                 #
+        managed_bookmarks_enabled: ''           #
+        no_update: false                        #
+        password_manager_enabled: ''            #
