@@ -11,4 +11,16 @@ values:
     private_repo_def: ''
     release_family: ''
     uninstaller: ''
+  policy_extras:
+    archive_root: ''
+    policy_archive: 'https://dl.google.com/dl/edgedl/chrome/policy/policy_templates.zip'
+    policy_files: {}
+    registry_keys: []
+    settings:
+      chrome_homepage: ''
+      home_page: ''
+      managed_bookmarks: null
+      managed_bookmarks_enabled: ''
+      no_update: false
+      password_manager_enabled: ''
 ...

@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Set values specific to:
+#   salt['config.get']('os_family') == Windows.
+#
+# You just need to add the key:values for this `os_family` that differ
+# from `defaults.yaml` + `<osarch>.yaml`.
+#
+# If you do not need to provide defaults via the `os_family` config,
+# you can remove this file or provide at least an empty dict, e.g.
+# values: {}
+---
+values:
+  pkg:
+{%- if salt.grains.get('cpuarch') == 'AMD64' %}
+    installer_uri: 'https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B283A932E-3183-500D-C05D-392D66C8D76A%7D%26lang%3Den%26browser%3D4%26usagestats%3D0%26appname%3DGoogle%2520Chrome%26needsadmin%3Dtrue%26ap%3Dx64-stable-statsdef_1/chrome/install/ChromeStandaloneSetup64.exe'
+    uninstaller: 'C:/Program Files/...'
+{%- else %}
+    installer_uri: 'https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B283A932E-3183-500D-C05D-392D66C8D76A%7D%26lang%3Den%26browser%3D4%26usagestats%3D0%26appname%3DGoogle%2520Chrome%26needsadmin%3Dtrue%26ap%3Dstable-statsdef_1/chrome/install/ChromeStandaloneSetup.exe'
+    uninstaller: 'C:/Program Files (x86)/...'
+{%- endif %}
+  policy_extras:
+    policy_files:
+      google_admx: 'C:\Windows\PolicyDefinitions\google.admx'
+      chrome_admx: 'C:\Windows\PolicyDefinitions\chrome.admx'
+      chrome_adml: 'C:\Windows\PolicyDefinitions\en-US\chrome.adml'
+    registry_keys:
+      - 'HKEY_LOCAL_MACHINE\SOFTWARE\Google\Chrome'
+      - 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome'
+      - 'HKEY_LOCAL_MACHINE\SOFTWARE\Google\Update\Clients\{8A69D345-D564-463c-AFF1-A69D9E530F96}'
+      - 'HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Google\Update\Clients\{8A69D345-D564-463c-AFF1-A69D9E530F96}'
+...
